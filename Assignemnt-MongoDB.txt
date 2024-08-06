@@ -1,0 +1,103 @@
+Aggregation Pipeline Activity
+
+Create a collection of document with below keys 
+{employeeid:number,employee_first_name:text,employee_last_name:text,department:text,designation:text,basic_salary:number,dearness_allowance:number,hra:number,pf:number,gross_salary:number,net_salary:number}
+
+different departments to be used Accounts,Sales,Training,IT
+
+different designations to be used Asst Manager ,Team Leader,Manager,Staff
+
+You are in support of HR department and have to allocate each of below give employees to above departments
+
+Erric Jones,Simond Touffel,Bruce Wayne,Klarke Kentt,Will Wade,Erric Bana,Tom Bruth
+
+The Salary has to be in range for different heads as 
+basic  12000 to 13000
+da 1000 to 2000
+hra 300 to 400
+pf 200 to 400
+gross salary 15000 to 25000
+net salary 11000 to 15000
+
+
+=============================================================
+Create summary using aggregation for below requirements 
+
+total basic based on  department and designation
+total da based on department and designation 
+avg hra based on department and designation 
+employee getting maximum net salary 
+employee getting minimum net salary 
+count of employee based on department and designation
+
+
+1. Total Basic Salary Based on Department and Designation
+
+db.employees.aggregate([
+    {
+        $group: {
+            _id: { department: "$department", designation: "$designation" },
+            total_basic_salary: { $sum: "$basic_salary" }
+        }
+    }
+]);
+
+
+2. Total Dearness Allowance (DA) Based on Department and Designation
+
+db.employees.aggregate([
+    {
+        $group: {
+            _id: { department: "$department", designation: "$designation" },
+            total_da: { $sum: "$dearness_allowance" }
+        }
+    }
+]);
+
+
+3. Average HRA Based on Department and Designation
+
+db.employees.aggregate([
+    {
+        $group: {
+            _id: { department: "$department", designation: "$designation" },
+            average_hra: { $avg: "$hra" }
+        }
+    }
+]);
+
+
+4. Employee Getting Maximum Net Salary
+
+db.employees.aggregate([
+    {
+        $sort: { net_salary: -1 }
+    },
+    {
+        $limit: 1
+    }
+]);
+
+
+5. Employee Getting Minimum Net Salary
+
+db.employees.aggregate([
+    {
+        $sort: { net_salary: 1 }
+    },
+    {
+        $limit: 1
+    }
+]);
+
+
+6. Count of Employees Based on Department and Designation
+
+db.employees.aggregate([
+    {
+        $group: {
+            _id: { department: "$department", designation: "$designation" },
+            count: { $sum: 1 }
+        }
+    }
+]);
