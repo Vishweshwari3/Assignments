@@ -1,0 +1,161 @@
+--set path bin
+--mongosh
+--show dbs
+
+--To refer a field-->represent using prefix $
+
+use moviedb
+name db.getName()
+create-- use databasename
+create collection--db.createCollection('movies');
+to know document - db.movies.find()
+db.movies.find({'_id':1})
+
+
+db.movies.insert(......)
+db.movies.insertOne({'name':'12thFail','category':'Drama','year':2022,'language':'Hindi','revenue':60})
+db.movies.insertMany([{'name':'Kantara','category':'Action','year':'2022','revenue':500},{'name':'Sholay','category':'Action','category':'1972','revenue':100}])
+db.movies.insertMany([
+{'name':'Kantara', 'category':'Action', 'year':2022, 'revenue':500}, 
+{'name':'Sholay', 'category':'Action', 'year':1972, 'revenue':100}, 
+{'name':'Drishyam', 'category':'Thriller', 'year':2022, 'revenue':600},
+{'name':'Bahubali 2', 'category':'Action', 'year':2020, 'revenue':500}, 
+{'name':'Gadar 2', 'category':'Action', 'year':2023, 'revenue':1000}, 
+{'name':'Bhediya', 'category':'Thriller', 'year':2023, 'revenue':660}
+])
+
+db.movies.updateOne({'name':'Bahubali'},{$set:{'language':'Telugu','year':2013}})
+db.movies.updateMany({'name':'Bahubali'},{$set:{'language':'Telugu'}})
+
+db.movies.updateOne({},{$set:{}})---only one changes even many are avalibale
+db.movies.updateOne({'_id':5},{$set:{'title':'The Great One'}})---evrything changes
+
+db.movies.updateMany({'revenue':1600},{$rename:{'title':'name'}})---change field name
+
+db.movies.find({'_id':1})
+
+db.movies.updateMany({},{$unset:{'category':'Thriller'}})
+
+moviedb> db.movies.find({'revenue':{$gt:1000}})
+moviedb> db.movies.find({'revenue':{$gt:1000}}).count()
+
+
+db.movies.find({'year':{$ne:1995},$or:[{'category':'Action'},{'revenue':{$gt:550}}]})
+
+db.movies.find({$and:[{'year':{$ne:1995}}, 
+{$or:[{'category':'Action'}, {'revenue':{$gt:550}}]}]});
+
+db.movies.find({'year':{$ne:1995}, $or:[{'category':'Action'}, {'revenue':{$gt:550}}]});
+
+
+--Use $setOnInsert when you want to set default values or initialize fields 
+only during the insertion of new documents. 
+--Use $set for regular updates that may or may not result in new document insertions.
+
+$gt - greater then
+$gte - greater then or equal to
+$lt - less then
+$lte - less then or equal to
+$ne - not equals to
+
+
+projection---to display selected fields
+
+db.movies.find({},{'_id':0,'title':1,'category':1});
+db.movies.find({$or:[{'revenue':{$gt:550}},{$and:[{'year':{$ne:1995}},{'category':'Action'}]}]},{'_id':0,'title':1,'category':1})
+
+
+
+aggregate pipelines
+
+input-filtering($match)-grouping($group)-formatting($project)-output
+
+db.movies.aggregate([{$group:{_id:"$category",count:{$sum:1}}}]) grouping based on the category and count is if finds a document add 1.
+
+db.movies.aggregate([{$group:{_id:"$category",count:{$sum:"$revenue"}}}]) if we not keep $ for revenue then it takes as value but it should be field to use as field we have to keep $ as prefix 
+
+
+db.movies.aggregate([
+  { $project: { name: 1, year: 1, _id: 0 } }
+])
+
+db.movies.aggregate([
+  { $project: { movieTitle: "$name", releaseYear: "$year", _id: 0 } }
+])
+
+
+db.movies.aggregate([
+  { $project: { movieTitle: "$name", releaseYear: "$year", _id: 0 } }
+])
+
+db.movies.aggregate([
+  { $project: { name: 1, doubleRevenue: { $multiply: ["$revenue", 2] }, _id: 0 } }
+])
+
+db.movies.aggregate([
+  { $project: { name: 1, roundedRevenue: { $round: ["$revenue", 2] }, _id: 0 } }
+])
+
+db.movies.aggregate([{$match : {'category':'Action'}},
+ {$group:{_id:'$category', total_revenue:{$sum:'$revenue'}}},  
+{$project : {'category':1, 'total_revenue':1 }}
+])
+
+db.movies.aggregate([
+  {
+    $group: {
+      _id: "$category",
+      movieNames: { $push: "$title" }
+    }
+  }
+])
+
+db.movies.aggregate([
+  { $match: { category: 'Action' } },
+  { $group: { _id: "$category", moviesList: { $push: "$title" } } },
+  { $project: { category: 1, firstTwoMovies: { $slice: ["$moviesList", 2] }, _id: 0 } }
+])
+
+db.movies.aggregate([
+  { $sort: { revenue: -1 } },  
+  { $limit: 2 },               
+  { $project: { title: 1, revenue: 1, _id: 0 } }  
+])
+
+Find the Top 2 Highest-Grossing Movies
+
+db.movies.aggregate([
+  { $sort: { revenue: -1 } },  
+  { $limit: 2 },               
+  { $project: { title: 1, revenue: 1, _id: 0 } }  
+])
+
+
+Find the Top 2 Highest-Grossing Movies in Each Category
+db.movies.aggregate([
+  {
+    $sort: { revenue: -1 }
+  },
+  {
+    $group: {
+      _id: "$category",
+      topMovies: {
+        $push: {
+          name: "$title",
+          revenue: "$revenue"
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      topMovies: { $slice: ["$topMovies", 2] }
+    }
+  }
+])
+
+
+--slice-formatting,push-grouping
+--$lookup-same as left outer join in sql
+
