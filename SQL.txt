@@ -1,0 +1,172 @@
+-create schema if not exists sampledb;
+-create database if not exists hotels_chain;
+
+-create table if not exists Products(
+Product_ID int NOT NULL,
+Product_Name varchar(45) NOT NULL,
+Quantity_In_Hand int NOT NULL,
+Re_Order_Quantity INT NULL,
+Re_Order_Level INT NULL,Price INT NULL);
+
+-create table if not exists Customers(
+Customer_ID INT NOT NULL,
+FirstName VARCHAR(50) NOT NULL,
+LastName VARCHAR(50) NOT NULL,
+Address VARCHAR(80),City VARCHAR(30),
+Postal_Code INT);
+
+-describe/desc products;
+-describe customers;
+-alter table customers add Gender Varchar(30);
+-alter table customers change column Gender Sex varchar(30);
+-alter table customers drop column sex;
+-alter table customers add primary key( Customer_ID);
+-drop table products;
+
+-create table if not exists Products(
+Product_ID int NOT NULL,
+Product_Name varchar(45) NOT NULL,
+Quantity_In_Hand int NOT NULL,
+Re_Order_Quantity INT NULL,
+Re_Order_Level INT NULL,
+Price INT NULL,PRIMARY KEY(Product_ID));
+
+primary key constraint
+
+-create table persons(
+P_Id int NOT NULL,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255),
+constraint pk_PersonID primary key(P_Id,LastName));
+
+foreign key constraint
+
+-create table if not exists Customer_order(
+Order_ID int not null,
+Product_ID int not null,
+Customer_ID int not null,
+Quantity_ordered int not null,
+constraint fk1 foreign key(Product_ID)
+references products(Product_ID),
+constraint fk2 foreign key(Customer_ID)
+references customers(Customer_ID));
+
+
+create table if not exists categories(
+    -> Cat_ID int not null primary key,
+    -> Cat_Name varchar(50) not null,
+    -> Cat_Desc text);
+
+Create table ProductsDemo(
+    -> pid int not null primary key,
+    -> PName varchar(50) not null,
+    -> PPrice decimal not null,
+    -> CatID int not null);
+
+alter table ProductsDemo
+    -> add constraint fk_ProductsDemo
+    -> foreign key (CatID) references Categories(Cat_ID);
+
+for contsraint name
+ show create table ProductsDemo;
+
+alter table ProductsDemo
+    -> drop foreign key fk_ProductsDemo;
+
+CRUD operations
+
+
+insert into
+    -> Products(Product_ID,Product_Name,Quantity_in_hand,Re_order_quantity,Re_order_Level,Price) values(1,'Red Rugs Carpets',400,500,400,800);
+insert into Products values(3,'Black Rugs Carpets',500,400,500,7000);
+insert into Products values(4,'Black Silk Sofa',100,600,700,7000);
+insert into Products values(5,'Red Velevt Carpets',300,600,700,5000);
+insert into Products values(6,'Soft Silk Sofa',300,600,700,5000);
+insert into Products values(7,'Black Silk Carpets',300,500,600,4000);  
+insert into Products values(8,'Hard Rugs Carpets',500,600,700,5000);   
+
+insert into customers(Customer_ID,Firstname,LastName,Address,City,Postal_Code) values(1,'Peter','James','torikatu 46','Oulu',90110);
+
+Insert into customer_order (Order_ID,Product_ID,Customer_ID,Quantity_Ordered) values(1,1,1,10);
+
+select *from products where Product_ID=1;
+select *from products where Product_name='Black Silk Carpets';
+update products set price=9000 where Product_Name='Black Silk Carpets';
+delete from customers where customer_ID=7;
+select avg(price) avg_buy_price from products;
+select avg(price) avg_buy_price from products;
+
+truncate-we cannot rollback
+delete-we can rollback
+
+
+------------------day2----------------------------------------------------
+
+
+-select count(customer_id) total_customers,city from customers group by city;
+-select count(customer_id) total_customers,city from customers where customer_id<8 group by city;
+-select count(customer_id) total_customers,city from customers where customer_id<8 group by city having count(customer_id)>2;
+
+SYNTAX for groupby and having
+select
+from
+where
+group by
+having
+
+select *from customers order by city asc;
+select customer_id,concat(FirstName,' ',LastName) Customer_Name from customers order by customer_name asc;
+select *from customers order by FirstName asc,Lastname asc;
+
+
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    manager_id INT,
+    FOREIGN KEY (manager_id) REFERENCES employees(emp_id)
+);
+
+
+CREATE TABLE departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50),
+    emp_id INT,
+    FOREIGN KEY (emp_id) REFERENCES employees(emp_id)
+);
+
+INSERT INTO employees (emp_id, emp_name, manager_id) VALUES 
+(1, 'Alice', NULL),
+(2, 'Bob', 1),
+(3, 'Charlie', 1),
+(4, 'Dave', 2);
+
+
+INSERT INTO departments (dept_id, dept_name, emp_id) VALUES 
+(1, 'HR', 1),
+(2, 'Engineering', 2),
+(3, 'Marketing', NULL),
+(4, 'Sales', NULL);
+
+select employees.emp_id,employees.emp_name,departments.dept_name from employees left join departments on employees.emp_id=departments.emp_id;
+
+select e1.emp_id as employee_id,e1.emp_name as employee_name,e2.emp_name as manager_name from employees e1,employees e2 where e1.manager_id=e2.emp_id;
+
+select e1.emp_id as employee_id,e1.emp_name as employee_name,e2.emp_name as manager_name from employees e1 inner join employees e2 on e1.manager_id=e2.emp_id;
+
+indexing - faster access
+simple index-specific column   create index emp_name on employees(emp_name);
+composite-multiple coulmns     create index index_emp_name on employees(emp_id,emp_name);
+unique-for distinct            create unique index idx_emp_name on employees(emp_id);
+
+
+partial depependency- depend on part of a composite key
+transitive- on non-key depend on another non-key
+
+1nf-primary key,atomic,no repeating group
+2nf-if redundant-no partial dependency-create separate tables using foreign key
+3nf-if dependent on not only one but also on other-no transitive dependency-create separate tables
+
+
