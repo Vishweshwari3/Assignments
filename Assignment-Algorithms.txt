@@ -1,0 +1,278 @@
+--Write an algorithm to check if a given number is even or odd.
+
+ Algorithm
+
+1. Input: A number n.
+2. Process:
+   - If the number n is divisible by 2 (i.e., n % 2 == 0), then the number is even.
+   - Otherwise, the number is odd.
+3. Output: "Even" if the number is even, "Odd" if the number is odd.
+
+Pseudocode
+
+    Input: n (an integer)
+    Output: "Even" if n is even, "Odd" if n is odd
+
+    Begin
+        if (n % 2 == 0) then
+            print "Even"
+        else
+            print "Odd"
+        end if
+    End
+
+--------------------------------------------------------------------------------------
+
+1.Algorithm to Check if a Given Number is Prime
+
+Algorithm
+
+1.Input:A number n
+2.Process:
+	-If the number is 0 or 1 , then the number is not prime.
+	-If the number is divisible by 2, then the number is prime.
+3.Output:"Prime" if the number is prime,"Not a prime" if the number is not prime
+
+Pseudocode
+
+	Input:n(an integer)
+	Output:"Prime" if n is prime, "Not prime" if n is not prime.
+
+	Begin
+		
+ 		if(n==0||n==1) then
+		return false;
+                print "Not prime"
+                if(n%2!=0)
+		print "Not prime"
+		flag=1
+		break
+		if(flag==0)
+		print "Prime"
+	End
+Code:
+
+public static boolean isPrime(int n) 
+{
+        if (n<=1) 
+	{
+         return false;
+        }
+        for (int i = 2; i<= n; i++) 
+	{
+         if (n%i== 0) 
+	{
+         return false;
+        }
+        }
+        return true;
+}
+
+--------------------------------------------------------------------------------------
+
+2.Algorithm to Generate Fibonacci Series Until the Number 1000
+
+Algorithm
+
+Input: Integers a=0,b=1,count of 1000.
+Process:Use a loop to generate Fibonacci series.
+In each iteration, compute the next Fibonacci number as c = a + b.
+--Update a and b for the next iteration: a becomes b and b becomes c.
+Output: Print series
+
+Pseudocode:
+Input: count value (1000)
+Output: Fibonacci numbers up to 1000
+
+Begin
+	c=a+b
+	a=b
+	b=c
+Code
+
+public class Main
+{
+	public static void main(String[] args) {
+		int a=0,b=1,c,count=1000;
+			System.out.print(a+" "+b);
+		for(int i=0;i<=count;i++)
+		{
+		    c=a+b;
+		    a=b;
+		    b=c;
+		    System.out.print(" "+c);
+		}
+		
+	}
+}
+
+--------------------------------------------------------------------------------------
+
+3.Write an algorithm to accept a number and return the reverse of the same. If the number ends with one or more zeros, then in the reversed number those zeros will not be present (since those zeros become leading zeros).
+
+Algorithm
+
+Input: A string representing a number.
+Process:Traverse the string from the beginning and count leading zeros.
+        Use this count to skip these zeros when processing the string.
+	Use a StringBuffer to reverse the string after removing the leading zeros.
+Output: The reversed string without leading zeros.
+
+
+Input: n
+Begin
+    Initialize i to 0
+    While (i < length of n and n[i] is '0') do
+        Increment i
+    End While
+    reversedString = sb.toString()
+    Return reversedString
+End
+
+import java.util.*;
+public class Main
+{
+	public static String rev(String n) {
+		int i=0;
+		while(i<n.length()&& n.charAt(i)=='0')
+		i++;
+		StringBuffer sb= new StringBuffer(n);
+		sb.replace(0,i,"");
+		return sb.toString();
+		
+	}
+	public static void main(String[] args)
+	{
+	    String n="098";
+	    n=rev(n);
+	    System.out.print(n);
+	}
+}
+
+--------------------------------------------------------------------------------------
+
+4.Find the maximum element in an array: Given an array of integers, write a function to find the maximum element in the array.
+
+Algorithm
+Input: An array of integers.
+Process:
+	Initialize a variable max to the first element of the array.
+	Traverse the array from the second element to the end.
+	For each element, compare it with max.
+	If the current element is greater than max, update max to this element.
+Output: The maximum element in the array.
+
+Input: array (an array of integers)
+Output: max (an integer)
+
+Begin
+    max = array[0]
+    For i = 1 to length of array - 1 do
+        If array[i] > max then
+            max = array[i]
+        End If
+    End For
+    Print max
+End
+
+import java.util.Scanner;
+
+public class MaxElementFinder {
+    public static int findMax(int[] array) {
+        int max = array[0];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] > max) {
+                max = array[i];
+            }
+        }
+        return max;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] array = new int[n];
+        for (int i = 0; i < n; i++) {
+            array[i] = sc.nextInt();
+        }
+        sc.close();
+        int max = findMax(array);
+        System.out.println("The maximum element is: " + max);
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+5.Find the first occurrence of an element in an array: Given an array of integers and an element, write a function to find the first occurrence of the element in the array. 
+
+Algorithm
+Input: An array of integers and a target element.
+Process:
+	Traverse the array from the beginning.
+	For each element, check if it matches the target element.
+	If a match is found, return the index of this first occurrence.
+	If the end of the array is reached and no match is found, return -1.
+Output: The index of the first occurrence of the target element.
+
+
+Input: array (an array of integers), target (an integer)
+Output: index (an integer)
+
+Begin
+    index = -1
+    For i = 0 to length of array - 1 do
+        If array[i] == target then
+            index = i
+            Break
+        End If
+    End For
+    Print index
+End
+
+
+import java.util.Scanner;
+
+public class FirstOccurrenceFinder {
+    public static int findFirstOccurrence(int[] array, int target) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] array = new int[n];
+        for (int i = 0; i < n; i++) {
+            array[i] = sc.nextInt();
+        }
+        int target = sc.nextInt();
+        sc.close();
+        int index = findFirstOccurrence(array, target);
+        System.out.println("The first occurrence of " + target + " is at index: " + index);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
